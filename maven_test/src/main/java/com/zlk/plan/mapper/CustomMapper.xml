@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zlk.plan.mapper.CustomMapper" >
+    <!--设置缓冲器的策略   设置刷新事件    设置缓存是否只读   设置缓存最大数量-->
+    <cache eviction="FIFO" blocking="60000" readOnly="true" size="128"></cache>
+    <!--resultMap将数据库查询结果映射到实体类中-->
+    <resultMap type="com.zlk.plan.entity.Custom" id="userEntityMap">
+        <id property="cid" column="cid" javaType="java.lang.Integer"/>
+        <result property="cname" column="cname" javaType="java.lang.String"/>
+        <result property="crealname" column="crealname" javaType="java.lang.String"/>
+        <result property="caddress" column="caddress" javaType="java.lang.String"/>
+        <result property="cfax" column="cfax" javaType="java.lang.String"/>
+        <result property="cemail" column="cemail" javaType="java.lang.String"/>
+        <result property="cadmin" column="cadmin" javaType="java.lang.String"/>
+        <result property="cphone" column="cphone" javaType="java.lang.String"/>
+        <result property="cstate" column="cstate" javaType="java.lang.String"/>
+        <result property="cps" column="cps" javaType="java.lang.String"/>
+    </resultMap>
+    <resultMap type="com.zlk.plan.entity.Orders" id="ordersEntityMap">
+        <id property="oid" column="oid" javaType="java.lang.Integer"/>
+        <result property="o_cname" column="o_cname" javaType="java.lang.String"/>
+        <result property="o_pname" column="o_pname" javaType="java.lang.String"/>
+        <result property="onum" column="onum" javaType="java.lang.Integer"/>
+        <result property="oprice" column="oprice" javaType="java.lang.Double"/>
+        <result property="ounice" column="ounice" javaType="java.lang.String"/>
+        <result property="ostate" column="ostate" javaType="java.lang.String"/>
+        <result property="ocreatetime" column="ocreatetime" javaType="java.util.Date"/>
+        <result property="ofinishtime" column="ofinishtime" javaType="java.util.Date"/>
+        <result property="ops" column="ops" javaType="java.lang.String"/>
+        <result property="oimg" column="oimg" javaType="java.lang.String"/>
+        <result property="oacr" column="oacr" javaType="java.lang.String"/>
+    </resultMap>
+    <resultMap type="com.zlk.plan.entity.Product" id="productEntityMap">
+        <id property="pid" column="pid" javaType="java.lang.Integer"/>
+        <result property="pname" column="pname" javaType="java.lang.String"/>
+        <result property="ptype" column="ptype" javaType="java.lang.String"/>
+        <result property="pstate" column="pstate" javaType="java.lang.String"/>
+        <result property="pimg" column="pimg" javaType="java.lang.String"/>
+    </resultMap>
+
+    <!--查询 所有用户 limit第一个数是从哪开始 第二个是每页个数-->
+    <select id="selectCustomAll" resultType="com.zlk.plan.entity.Pagination" resultMap="userEntityMap">
+        select * from custom limit #{startPage},#{limit}
+    </select>
+    <!--分页查询-->
+    <select id="findCurrent" parameterType="com.zlk.plan.entity.Pagination" resultType="java.lang.Integer">
+        select count(1) from custom
+    </select>
+    <!--添加-->
+    <insert id="addCustom" parameterType="com.zlk.plan.entity.Custom">
+        insert into custom (cid,cname,crealname,caddress,cfax,cemail,cadmin,cphone,cstate,cps)
+        values (#{cid},#{cname},#{crealname},#{caddress},#{cfax},#{cemail},#{cadmin},#{cphone},#{cstate},#{cps})
+    </insert>
+    <!--删除-->
+    <delete id="deleteCustomById" parameterType="java.lang.Integer">
+        delete from custom where cid=#{cid}
+    </delete>
+    <!--修改-->
+    <update id="updateCustomById" parameterType="com.zlk.plan.entity.Custom">
+        update custom set cname=#{cname},crealname=#{crealname},caddress=#{caddress},cfax=#{cfax},cemail=#{cemail},cadmin=#{cadmin},cphone=#{cphone},cstate=#{cstate},cps=#{cps} where cid=#{cid}
+    </update>
+    <select id="findOne" parameterType="com.zlk.plan.entity.Custom" resultMap="userEntityMap">
+        select * from custom where cid=#{cid}
+    </select>
+    <!--模糊查询-->
+    <select id="dimCustom" resultMap="userEntityMap" parameterType="java.lang.String">
+        select * from custom where cname like '%'#{dim}'%'
+    </select>
+
+    <!--查询orders表所有用户-->
+    <select id="selectOrdersAll" resultType="com.zlk.plan.entity.Pagination" resultMap="ordersEntityMap">
+        select * from orders ORDER BY oid ASC limit #{startPage},#{limit}
+    </select>
+    <!--分页查询-->
+    <select id="finOrders" parameterType="com.zlk.plan.entity.Pagination" resultType="java.lang.Integer">
+        select count(1) from orders
+    </select>
+    <!--添加-->
+    <insert id="addOrders" parameterType="com.zlk.plan.entity.Orders">
+        insert into orders (o_cname,o_pname,onum,oprice,ounice,ostate,ocreatetime,ofinishtime,ops,oimg,oacr)
+        values (#{o_cname},#{o_pname},#{onum},#{oprice},#{ounice},#{ostate},#{ocreatetime},#{ofinishtime},#{ops},#{oimg},#{oacr})
+    </insert>
+    <!--删除-->
+    <delete id="deleteOrders" parameterType="java.lang.Integer">
+        delete from orders where oid=#{oid}
+    </delete>
+    <!--修改-->
+    <update id="updateOrdersById" parameterType="com.zlk.plan.entity.Orders">
+        update orders set o_cname=#{o_cname},o_pname=#{o_pname},onum=#{onum},oprice=#{oprice},ounice=#{ounice},ostate=#{ostate},ocreatetime=#{ocreatetime},ofinishtime=#{ofinishtime},ops=#{ops},oimg=#{oimg},oacr=#{oacr} where oid=#{oid}
+    </update>
+
+    <!--查询Product表所有的值-->
+    <select id="selectProductAll" parameterType="com.zlk.plan.entity.Product" resultMap="productEntityMap">
+        select * from product limit #{startPage},#{limit}
+    </select>
+    <!--分页查询-->
+    <select id="finProduct" parameterType="com.zlk.plan.entity.Product">
+        select count(1) from product
+    </select>
+
+</mapper>

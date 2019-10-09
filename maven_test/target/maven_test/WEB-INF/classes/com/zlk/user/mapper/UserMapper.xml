@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zlk.user.mapper.UserMapper" >
+    <!--设置缓冲器的策略   设置刷新事件    设置缓存是否只读   设置缓存最大数量-->
+    <cache eviction="FIFO" blocking="60000" readOnly="true" size="128"></cache>
+    <!--resultMap将数据库查询结果映射到实体类中-->
+    <resultMap type="com.zlk.user.entity.User" id="userEntityMap">
+        <result property="name" column="name" javaType="java.lang.String"/>
+        <result property="password" column="password" javaType="java.lang.String"/>
+    </resultMap>
+    <sql id="sql">
+        select name,password from acc
+    </sql>
+    <select id="selectUser" parameterType="com.zlk.user.entity.User" resultMap="userEntityMap">
+        <include refid="sql"/>
+        where name=#{name} and password=#{password}
+    </select>
+
+</mapper>
